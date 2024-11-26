@@ -7,6 +7,6 @@ namespace MiniGames.Core.AssetManagement
 {
     public interface IStaticDataProvider
     {
-        public IScreenConfig ScreenConfig { get; }
+        public IUIConfig UIConfig { get; }
     }
 }

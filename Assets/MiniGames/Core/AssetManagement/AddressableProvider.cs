@@ -6,6 +6,7 @@ using MiniGames.Core.Utility.Interfaces;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceProviders;
+using UnityEngine.SceneManagement;
 
 namespace MiniGames.Core.AssetManagement
 {
@@ -37,13 +38,19 @@ namespace MiniGames.Core.AssetManagement
             return await handle.Task;
         }
 
-        public async Task<SceneInstance> LoadScene(string sceneName, CancellationToken cancellationToken = default)
+        public async Task<SceneInstance> LoadScene(string sceneName, LoadSceneMode loadMode,
+            CancellationToken cancellationToken = default)
         {
             await CheckInitialization();
             cancellationToken.ThrowIfCancellationRequested();
-            
-            var operationHandle = Addressables.LoadSceneAsync(sceneName);
+
+            var operationHandle = Addressables.LoadSceneAsync(sceneName, loadMode, false);
             return await operationHandle.Task;
+        }
+
+        public Task UnloadScene(SceneInstance scene, CancellationToken cancellationToken = default)
+        {
+            return Addressables.UnloadSceneAsync(scene).Task;
         }
 
         public void Release(string key)

@@ -12,9 +12,9 @@ namespace MiniGames.AssetManagement
     public class LocalDataProvider : IStaticDataProvider, IInitializableAsync, IDisposable
     {
         private readonly IAssetProvider _assetProvider;
-        private ScreenConfig _screenConfig;
+        private UIConfig _uiConfig;
         
-        public IScreenConfig ScreenConfig => _screenConfig;
+        public IUIConfig UIConfig => _uiConfig;
         
         public LocalDataProvider(IAssetProvider assetProvider)
         {
@@ -30,7 +30,7 @@ namespace MiniGames.AssetManagement
         
         private async Task LoadScreenList(CancellationToken cancellationToken = default)
         {
-            _screenConfig = await _assetProvider.Load<ScreenConfig>(AssetKeys.ScreenListConfig, cancellationToken);
+            _uiConfig = await _assetProvider.Load<UIConfig>(AssetKeys.ScreenListConfig, cancellationToken);
         }
         
         public void Dispose()

@@ -6,12 +6,14 @@ using UnityEngine;
 namespace MiniGames.Core.Configs
 {
     [CreateAssetMenu(menuName = "Content/Configs/Screen list", fileName = "ScreenList")]
-    public class ScreenConfig : ScriptableObject, IScreenConfig
+    public class UIConfig : ScriptableObject, IUIConfig
     {
         [SerializeField] private bool _lazyLoad = false;
+        [SerializeField] private bool _reUse = true;
         [SerializeField] private SerializedDictionary<ScreenID, string> _screenReference = new ();
         
         public Dictionary<ScreenID, string>  ScreenReference => _screenReference;
         public bool LazyLoad => _lazyLoad;
+        public bool ReUse => _reUse;
     }
 }

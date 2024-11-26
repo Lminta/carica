@@ -2,22 +2,23 @@ using UnityEngine;
 
 namespace MiniGames.Core.UI
 {
-    public abstract class AbstractScreen : MonoBehaviour, IScreenController
+    public abstract class ScreenControllerBase : MonoBehaviour
     {
-        protected IScreenView ScreenView;
+        [SerializeField] protected ScreenViewBase _screenView;
+        
         public virtual void Setup<TPayload>(TPayload payload) where TPayload : IScreenPayload
         {
-            ScreenView = payload.ScreenView;
+            
         }
 
         public virtual void Open()
         {
-            ScreenView.Open();
+            _screenView.Open();
         }
 
         public virtual void Close()
         {
-            ScreenView.Close();
+            _screenView.Close();
         }
     }
 }

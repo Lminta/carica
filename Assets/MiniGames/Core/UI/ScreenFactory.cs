@@ -15,44 +15,43 @@ namespace MiniGames.Core.UI
     {
         private readonly DiContainer _container;
         private readonly IAssetProvider _assetProvider;
-        private readonly ScreenManager _screenManager;
+        private readonly UIManager _uiManager;
         private readonly IStaticDataProvider _staticDataProvider;
         
-        private IScreenConfig _screenConfig;
+        private IUIConfig _screenConfig;
         private Dictionary<ScreenID, GameObject> _screenPrefabs = new ();
 
-        public ScreenFactory(DiContainer container, IAssetProvider assetProvider, ScreenManager screenManager,
+        public ScreenFactory(DiContainer container, IAssetProvider assetProvider, UIManager uiManager,
             IStaticDataProvider staticDataProvider)
         {
             _container = container;
             _assetProvider = assetProvider;
-            _screenManager = screenManager;
+            _uiManager = uiManager;
             _staticDataProvider = staticDataProvider;
         }
 
-        public async Task<TController> CreateScreenController<TController, TPayload>(ScreenID id, TPayload payload)
-            where TController : IScreenController, TPayload where TPayload : IScreenPayload
+        public async Task<TController> CreateScreen<TController>(ScreenID id,
+            CancellationToken cancellationToken = default)
+            where TController : ScreenControllerBase
         {
-            if(!_screenConfig.ScreenReference.TryGetValue(id, out var screen))
+            if (!_screenConfig.ScreenReference.TryGetValue(id, out var screen))
             {
                 Debug.LogFormat("Screen with id {0} not found in screen config", id);
             }
-            
+
             if (!_screenPrefabs.TryGetValue(id, out var prefab))
             {
                 prefab = await LoadScreen(id, CancellationToken.None);
                 _screenPrefabs.Add(id, prefab);
             }
-            
-            var controller = _container.InstantiatePrefab(prefab, _screenManager.Root).GetComponent<TController>();
-            
-            controller.Setup(payload);
+
+            var controller = _container.InstantiatePrefab(prefab, _uiManager.Root).GetComponent<TController>();
             return controller;
         }
- 
+
         public async Task InitializeAsync(CancellationToken cancellationToken = default)
         {
-            _screenConfig = _staticDataProvider.ScreenConfig;
+            _screenConfig = _staticDataProvider.UIConfig;
             if (!_screenConfig.LazyLoad)
             {
                 await LoadScreens(cancellationToken);
@@ -66,7 +65,7 @@ namespace MiniGames.Core.UI
             return Task.WhenAll(tasks);
         }
 
-        private async Task<GameObject> LoadScreen(ScreenID id, CancellationToken cancellationToken)
+        private async Task<GameObject> LoadScreen(ScreenID id, CancellationToken cancellationToken = default)
         {
             if(!_screenConfig.ScreenReference.TryGetValue(id, out var screen))
             {
