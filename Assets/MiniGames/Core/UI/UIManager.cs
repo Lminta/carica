@@ -34,12 +34,15 @@ namespace MiniGames.Core.UI
             var screen = _dataProvider.UIConfig.ReUse ? ScreenContainer<TScreen>.Screen : null;
             screen ??= await _screenFactory.CreateScreen<TScreen>(screenID, cancellationToken);
             
+            _currentScreen?.Close();
             if (_dataProvider.UIConfig.ReUse)
             {
                 ScreenContainer<TScreen>.Screen = screen;
             }
-
-            _currentScreen?.Close();
+            else
+            {
+                Destroy(_currentScreen);
+            }
             
             screen.Setup(payload);
             _currentScreen = screen;
