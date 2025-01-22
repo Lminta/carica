@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using MiniGames.Core.StateMachines.AppStateMachine;
+using MiniGames.Core.Utility;
 using MiniGames.Core.Utility.Interfaces;
 using Zenject;
 
@@ -20,7 +21,7 @@ namespace MiniGames.AppStates
         
         public void Enter()
         {
-            
+            InitializeServices().OnMainThread(_appStateMachine.Enter<AppInitializationState>).CheckResult();
         }
         
         private async Task InitializeServices()
